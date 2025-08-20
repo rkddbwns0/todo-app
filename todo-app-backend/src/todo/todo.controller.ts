@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { TodoService } from './todo.service';
 
 @Controller('todo')
@@ -11,17 +20,19 @@ export class TodoController {
   }
 
   @Get()
-  async getTodo() {
-    return await this.todoService.getTodo();
+  async getTodo(@Query('date') date?: Date) {
+    return await this.todoService.getTodo(date);
   }
 
-  @Put(':id')
-  async updateTodo(@Body() id: number) {
-    return await this.todoService.updateTodo(id);
+  @Put()
+  async updateTodo(@Body() body: { id: number[] }) {
+    const ids = body.id;
+    return await this.todoService.updateTodo(ids);
   }
 
-  @Delete(':id')
-  async deleteTodo(@Body() id: number) {
-    return await this.todoService.deleteTodo(id);
+  @Delete()
+  async deleteTodo(@Query('id') id: string) {
+    const ids = id.split(',').map(Number);
+    return await this.todoService.deleteTodo(ids);
   }
 }
